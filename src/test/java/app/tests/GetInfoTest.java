@@ -1,20 +1,47 @@
 package app.tests;
 
-import io.appium.java_client.android.AndroidDriver;
+import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeEach;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import test.appium.screens.MainScreen;
+import org.junit.jupiter.api.Test;
+import test.appium.data.StartPageHeaderData;
+import test.appium.factory.SelenideWebDriver;
+import test.appium.screens.StartScreen;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class GetInfoTest {
-  private AndroidDriver driver;
-  private MainScreen mainScreen;
 
   @BeforeEach
-  public void setUp() throws MalformedURLException {
-    driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), new DesiredCapabilities());
-    mainScreen = new MainScreen(driver);
+  public void setUp() {
+    Configuration.browserSize = null;
+    Configuration.browser = SelenideWebDriver.class.getName();
+  }
+
+  @Test
+  public void openStartScreenTest() {
+    new StartScreen()
+        .open()
+        .startScreenIsOpen()
+        .clickNextButton()
+        .startScreenTextShouldBeSameAs(StartPageHeaderData.SECOND_PAGE_HEADER)
+        .clickNextButton()
+        .clickSkipButton()
+        .startScreenTextShouldBeSameAs(StartPageHeaderData.ALERT_MESSAGE)
+        .clickOKButton()
+        .startScreenTextShouldBeSameAs(StartPageHeaderData.ENTER_MESSAGE);
+
+  }
+
+  @Test
+  public void checkComponentHeaders() {
+    new StartScreen()
+        .openMenu()
+        .clickComponent(StartPageHeaderData.CHAT)
+        .componentTextShouldBeSameAs(StartPageHeaderData.CHAT)
+        .clickComponent(StartPageHeaderData.EXERCISE)
+        .componentTextShouldBeSameAs(StartPageHeaderData.EXERCISE)
+        .clickComponent(StartPageHeaderData.GRAMMAR)
+        .componentTextShouldBeSameAs(StartPageHeaderData.GRAMMAR)
+        .clickComponent(StartPageHeaderData.STATS)
+        .componentTextShouldBeSameAs(StartPageHeaderData.STATS);
   }
 }
